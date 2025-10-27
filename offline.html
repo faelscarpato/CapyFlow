@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CapyFlow — Offline</title>
+  <link rel="manifest" href="/public/manifest.json" />
+  <meta name="theme-color" content="#39FF14" />
+  <style>
+    :root{--bg:#0B0F14;--fg:#E8F7EC;--accent:#39FF14}
+    html,body{height:100%}
+    body{margin:0;display:grid;place-items:center;background:var(--bg);font-family:system-ui,Segoe UI,Inter,sans-serif;color:var(--fg)}
+    .box{padding:24px 20px;border:1px solid #203125;border-radius:16px;background:linear-gradient(180deg,#0e141d 0%,#0b0f14 100%)}
+    h1{margin:0 0 8px;font-size:20px;letter-spacing:.5px}
+    p{opacity:.85;margin:0 0 12px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid #2b3e30;color:var(--bg);background:var(--accent);text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Você está offline</h1>
+    <p>O CapyFlow PWA continua disponível com recursos básicos. Assim que a conexão voltar, o app sincroniza.</p>
+    <a class="btn" href="/">Tentar novamente</a>
+  </div>
+</body>
+</html>
