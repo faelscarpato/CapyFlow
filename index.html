@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="theme-color" content="#39FF14" />
+<link rel="manifest" href="public/manifest.json" />
   <title>CapyUniverse — Chat</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +106,13 @@
     </form>
   </dialog>
 
-  <script src="main.js"></script>
+  <script src="main.js"></script><script src="main.js"></script>
+<script>
+     if ('serviceWorker' in navigator) {
+       window.addEventListener('load', () => {
+         navigator.serviceWorker.register('service-worker.js');
+       });
+     }
+   </script>
 </body>
 </html>
