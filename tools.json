@@ -1,0 +1,32 @@
+[
+  {
+    "id": "CapyIMG",
+    "title": "CapyIMG",
+    "category": "Criação & Conteúdo",
+    "description": "Geração de imagens por prompt."
+  },
+  {
+    "id": "CapyIMGtxt",
+    "title": "CapyIMGtxt",
+    "category": "Criação & Conteúdo",
+    "description": "Gerar prompt a partir de imagem."
+  },
+  {
+    "id": "CapyIDE",
+    "title": "CapyIDE",
+    "category": "Desenvolvimento & TI",
+    "description": "Gere e edite código."
+  },
+  {
+    "id": "CapyResumo",
+    "title": "CapyResumo",
+    "category": "Documentos & Leitura",
+    "description": "Resuma textos."
+  },
+  {
+    "id": "CapyPrompt",
+    "title": "CapyPrompt",
+    "category": "Criação & Conteúdo",
+    "description": "Refina e otimiza prompts automaticamente."
+  }
+]

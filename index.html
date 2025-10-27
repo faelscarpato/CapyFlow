@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CapyUniverse — Chat</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <aside id="sidebar" class="sidebar">
+    <header class="sidebar__header">
+      <div class="brand"><b>Capy</b>Universe</div>
+      <button id="closeSidebar" class="icon">✕</button>
+    </header>
+    <nav id="nav" class="sidebar__nav"></nav>
+    <footer class="sidebar__footer">
+      <button id="openHistory" class="btn wfull">Histórico</button>
+      <button id="openSettings" class="btn outline wfull" style="margin-top:8px">Configurações</button>
+    </footer>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <header class="topbar">
+    <button id="openSidebar" class="icon">☰</button>
+    <div class="logo"><span class="pink">Capy</span><span class="cyan">Universe</span></div>
+    <div class="row">
+      <button id="newChat" class="icon" title="Novo chat">🗎</button>
+      <button id="openSettingsHeader" class="icon">⚙</button>
+    </div>
+  </header>
+
+  <section id="context" class="context hidden">
+    <div class="ctx-title"></div>
+    <div class="ctx-desc"></div>
+  </section>
+
+  <section id="pills" class="pills hidden"></section>
+
+  <main id="chat" class="chat">
+    <section class="hero">
+      <h1>Bem-vindo ao CapyUniverse</h1>
+      <div class="hero-actions">
+        <button class="btn" data-quick="CapyIMG">Criar imagem</button>
+        <button class="btn" data-quick="CapyIDE">Gerar código</button>
+        <button class="btn outline" data-quick="CapyResumo">Resumir texto</button>
+      </div>
+    </section>
+  </main>
+
+  <form id="composerForm" class="composer" autocomplete="off" enctype="multipart/form-data">
+    <input type="file" id="fileInput" accept="image/*" hidden />
+    <button type="button" id="attach" class="icon" title="Anexar imagem">📎</button>
+    <div id="capyPromptToggle" class="pill" title="Melhorar prompt antes de enviar" style="display:none">⚡</div>
+          <input id="composer" class="composer__input" placeholder="Escreva aqui… (/*img, /*ide, /*resumo) — ou anexe uma imagem para CapyIMGtxt" />
+    <button class="send">➤</button>
+  </form>
+
+  <dialog id="settings" class="modal">
+    <form method="dialog" class="card">
+      <header class="card__header">
+        <h3>Configurações</h3>
+        <button value="close" class="icon">✕</button>
+      </header>
+      <section class="grid">
+        <div class="box">
+          <h4>Chaves de API</h4>
+          <label>Gemini <input id="keyGemini" placeholder="AIza..." /></label>
+          <label>OpenAI <input id="keyOpenAI" placeholder="sk-..." /></label>
+          <p class="hint">Sem chaves: Vision gera prompt básico; texto/código usam fallback local.</p>
+        </div>
+        <div class="box">
+          <h4>Preferências</h4>
+          <label>Tema
+            <select id="theme">
+              <option value="capy">Capy Neon</option>
+              <option value="mono">Mono</option>
+            </select>
+          </label>
+        </div>
+      </section>
+      <footer class="card__footer">
+        <button id="saveSettings" class="btn">Salvar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="history" class="modal">
+    <form method="dialog" class="card">
+      <header class="card__header">
+        <h3>Histórico</h3>
+        <button value="close" class="icon">✕</button>
+      </header>
+      <section class="box" style="margin:10px">
+        <div class="row" style="justify-content:space-between">
+          <button id="histNew" type="button" class="btn">Novo chat</button>
+          <button id="histClear" type="button" class="btn outline">Apagar tudo</button>
+        </div>
+        <ul id="histList"></ul>
+      </section>
+    </form>
+  </dialog>
+
+  <script src="main.js"></script>
+</body>
+</html>
