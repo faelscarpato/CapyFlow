@@ -244,7 +244,7 @@ body {
   background: #fff
 }
 
-/* histórico */
+
 #histList { list-style: none; padding: 0; margin: 10px 0 }
 #histList li {
   display: flex; align-items: center; justify-content: space-between;
