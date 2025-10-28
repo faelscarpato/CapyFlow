@@ -11,7 +11,8 @@ const elAttach=$('#attach'), elFileInput=$('#fileInput');
 const state = {
   tools: [],
   context: null,    // 'img' | 'ide' | 'text' | 'imgtxt'
-  img: { style:"Cinematic", ratio:"1:1", model:"flux", seed:randSeed() },
+  // IMPORTANTE: usar id/slug de estilo
+  img: { style:"cinematic", ratio:"1:1", model:"flux", seed:randSeed() },
   monaco: null, editor: null,
   sessionId: null
 };
@@ -114,23 +115,72 @@ function setContext(tool){
   $('#context .ctx-desc').textContent = tool.description||'';
 }
 
+// ===== estilos (NOVO catálogo) =====
+const IMG_STYLES = [
+  { id:'cinematic',    label:'Cinematic',        effect:'cinematic lighting, shallow depth of field, film grain, anamorphic bokeh, photoreal, 8k' },
+  { id:'neon',         label:'Neon',             effect:'neon glow, vibrant color accents, glossy surfaces, high contrast, dramatic rim light' },
+  { id:'cyberpunk',    label:'Cyberpunk',        effect:'futuristic city, neon signs, rainy reflections, moody teal-magenta palette, haze' },
+  { id:'cartoon3d',    label:'3D Cartoon',       effect:'pixar-like, soft global illumination, subsurface scattering, smooth shading' },
+  { id:'realistic',    label:'Realista',         effect:'ultra-detailed photo, natural lighting, realistic textures, hdr, 85mm lens' },
+  { id:'flatvector',   label:'Flat Vector',      effect:'flat vector illustration, geometric shapes, crisp lines, minimal gradients, clean palette' },
+  { id:'anime',        label:'Anime',            effect:'anime style, cel shading, dynamic action lines, expressive eyes, vibrant tones' },
+  { id:'manga',        label:'Manga Japonês',    effect:'manga ink style, halftone shading, screentones, dynamic panels, black & white emphasis' },
+  { id:'gothic',       label:'Gótico',           effect:'dark gothic, baroque ornaments, dramatic chiaroscuro, cathedral vibes' },
+  { id:'isometric',    label:'Isométrico',       effect:'isometric perspective, clean edges, orthographic look, soft shadows' },
+  { id:'lowpoly',      label:'Low Poly',         effect:'low poly, faceted geometry, simple materials, AO shading' },
+  { id:'isoneon',      label:'Isometric Neon',   effect:'isometric neon glow, cyber grid floor, vibrant highlights, glossy surfaces' },
+  { id:'portrait',     label:'Studio Portrait',  effect:'studio lighting, softbox key light, 85mm f/1.4 bokeh, skin tone fidelity' },
+  { id:'analog',       label:'Analog Film',      effect:'analog film grain, Kodak Portra 400, subtle bloom, natural contrast' },
+  { id:'watercolor',   label:'Aquarela',         effect:'watercolor painting, paper texture, soft bleeding, pastel palette' },
+  { id:'oilpaint',     label:'Óleo',             effect:'oil painting, visible brush strokes, impasto, canvas texture' },
+  { id:'lineart',      label:'Line Art',         effect:'clean line art, inked outlines, minimal shading, vector feel' },
+  { id:'clay',         label:'Clay Render',      effect:'clay render, matte material, studio backdrop, soft AO' },
+  { id:'blueprint',    label:'Blueprint',        effect:'blueprint technical drawing, white lines on blueprint paper, dimension marks' },
+  { id:'voxel',        label:'Voxel',            effect:'voxel art, cubic pixels, isometric, crisp edges' },
+  { id:'pixel',        label:'Pixel Art',        effect:'retro pixel art, 16-bit palette, dithering, sprite-like' },
+  { id:'papercraft',   label:'Papercraft',       effect:'paper craft, layered cutout, paper shadows, handcrafted feel' },
+  { id:'origami',      label:'Origami',          effect:'origami folded paper, creases, minimal palette, geometric folds' },
+  { id:'ghibli',       label:'Ghibli',           effect:'ghibli-esque, cozy whimsical vibe, painterly backgrounds, soft light' },
+  { id:'steampunk',    label:'Steampunk',        effect:'brass gears, steam pipes, victorian industrial, warm copper tones' },
+  { id:'noir',         label:'Noir',             effect:'film noir, high-contrast black and white, hard shadows, dramatic angles' },
+  { id:'fantasy',      label:'Fantasy Realism',  effect:'epic fantasy realism, volumetric light, detailed worldbuilding, cinematic scale' },
+  { id:'minimal',      label:'Minimalista',      effect:'minimalist composition, negative space, subtle palette, strict geometry' },
+  { id:'swiss',        label:'Poster Swiss',     effect:'Swiss grid poster, bold typography, primary shapes, sharp contrast' },
+];
+
+const RATIOS = ["1:1","16:9","9:16"];
+const MODELS = ["flux","sdxl"];
+
+function getStyleEffect(id){
+  const s = IMG_STYLES.find(x=>x.id===id); return s ? s.effect : '';
+}
+function getStyleLabel(id){
+  const s = IMG_STYLES.find(x=>x.id===id); return s ? s.label : id;
+}
+
 // pills (imagem)
-const IMG_STYLES = ["Cinematic","Neon","Cyberpunk","3D Cartoon","Realista","Flat Vector"];
-const RATIOS = ["1:1","16:9","9:16"]; const MODELS = ["flux","sdxl"];
 function showImagePills(){
   elPills.innerHTML=''; elPills.classList.remove('hidden');
-  elPills.appendChild(label('Estilo:')); IMG_STYLES.forEach(s=> elPills.appendChild(pill('style', s)));
-  elPills.appendChild(spacer()); elPills.appendChild(label('Aspecto:')); RATIOS.forEach(r=> elPills.appendChild(pill('ratio', r)));
-  elPills.appendChild(spacer()); elPills.appendChild(label('Modelo:')); MODELS.forEach(m=> elPills.appendChild(pill('model', m)));
-  const seed = document.createElement('input'); seed.className='pill'; seed.type='number'; seed.style.width='110px'; seed.value=state.img.seed;
+
+  elPills.appendChild(label('Estilo:'));
+  IMG_STYLES.forEach(s=> elPills.appendChild(pill('style', s.id, s.label)));
+
+  elPills.appendChild(spacer()); elPills.appendChild(label('Aspecto:'));
+  RATIOS.forEach(r=> elPills.appendChild(pill('ratio', r, r)));
+
+  elPills.appendChild(spacer()); elPills.appendChild(label('Modelo:'));
+  MODELS.forEach(m=> elPills.appendChild(pill('model', m, m)));
+
+  const seed = document.createElement('input'); seed.className='pill pill-input'; seed.type='number'; seed.style.width='96px'; seed.value=state.img.seed;
   seed.onchange = ()=> state.img.seed = Number(seed.value||0);
   elPills.appendChild(spacer()); elPills.appendChild(label('Seed:')); elPills.appendChild(seed);
+
   refreshPills();
 }
 function hidePills(){ elPills.classList.add('hidden'); }
-function pill(group, val){
-  const b=document.createElement('button'); b.className='pill'; b.textContent=val; b.dataset.group=group; b.dataset.val=val;
-  b.onclick=()=>{ if(group==='style') state.img.style=val; if(group==='ratio') state.img.ratio=val; if(group==='model') state.img.model=val; refreshPills(); };
+function pill(group, value, text){
+  const b=document.createElement('button'); b.className='pill'; b.textContent=text; b.dataset.group=group; b.dataset.val=value;
+  b.onclick=()=>{ if(group==='style') state.img.style=value; if(group==='ratio') state.img.ratio=value; if(group==='model') state.img.model=value; refreshPills(); };
   return b;
 }
 function label(t){ const d=document.createElement('div'); d.className='pill'; d.style.cursor='default'; d.style.opacity='.7'; d.textContent=t; return d; }
@@ -155,7 +205,7 @@ elForm.addEventListener('submit', async (e)=>{
     body = raw.slice(cmdMatch[0].length);
   }
 
-   if (elCapyToggle && elCapyToggle.classList.contains('active')){
+  if (elCapyToggle && elCapyToggle.classList.contains('active')){
     try {
       const refined = await capyPromptRefine(body);
       raw = (cmd ? cmd + ' ' : '') + refined;
@@ -164,7 +214,7 @@ elForm.addEventListener('submit', async (e)=>{
       raw = (cmd ? cmd + ' ' : '') + body; // segue mesmo assim
     }
   }
-addUser(raw);
+  addUser(raw);
   saveSessionContent();
   const intent = decideIntent(raw);
   if (intent === 'image'){
@@ -230,11 +280,16 @@ elFileInput.onchange = async (e)=>{
 // ===== flows =====
 async function flowImage(userText){
   const {style, ratio, model, seed} = state.img;
-  const eff = styleToEffect(style);
+  const styleLabel = getStyleLabel(style);
+  const effect     = getStyleEffect(style);
+  const negatives  = 'low quality, blurry, oversaturated, extra fingers, watermark, text artifact';
+
   const base = typeof userText==='string' ? userText : String(userText||'');
-  const prompt = `${cleanPrompt(base.replace(/^\/\*img\s*/,''))}. ${eff}`.trim();
+  const core = cleanPrompt(base.replace(/^\/\*img\s*/, ''));
+
+  const prompt = `${core}, style: ${styleLabel}, ${effect}, high detail, crisp focus, ${ratio}, --negatives: ${negatives}`.trim();
   const [w,h] = ratioToSize(ratio);
-  const holder = addAI(`Gerando imagem…<br><small>${style} • ${ratio} • ${model} • seed ${seed}</small>`);
+  const holder = addAI(`Gerando imagem…<br><small>${styleLabel} • ${ratio} • ${model} • seed ${seed}</small>`);
   await renderPollinations(prompt, w, h, model, seed, holder);
   saveSessionContent();
 }
@@ -445,17 +500,7 @@ function download(name, text){ const a=document.createElement('a'); a.href=URL.c
 
 // ===== Pollinations =====
 function ratioToSize(r){ return r==='16:9'?[1280,720]: r==='9:16'?[1080,1920]:[1024,1024]; }
-function styleToEffect(s){
-  switch(s){
-    case 'Cinematic': return 'cinematic lighting, shallow depth of field, film grain, photoreal';
-    case 'Neon': return 'neon glow, vibrant colors, high contrast, glossy surfaces';
-    case 'Cyberpunk': return 'futuristic city, neon signs, rain, reflections, moody palette';
-    case '3D Cartoon': return 'pixar style, soft lighting, smooth shading, subsurface scattering';
-    case 'Realista': return 'ultra-detailed realistic photo, natural lighting, hdr';
-    case 'Flat Vector': return 'flat vector illustration, geometric shapes, minimal gradients, crisp lines';
-    default: return '';
-  }
-}
+
 async function renderPollinations(prompt, w, h, model, seed, holder){
   const qs = new URLSearchParams({width:String(Math.min(w,1024)), height:String(Math.min(h,1024)), model, seed:String(seed), n:'1'});
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}.png?${qs.toString()}&noCache=${Date.now()}`;
